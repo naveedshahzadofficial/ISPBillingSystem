@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1280.0" stylesheets="@../styles/main.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ns.systems.ispbillingsystem.controllers.LayoutController">
+   <bottom>
+      <HBox prefHeight="30.0" styleClass="login-left-bg" BorderPane.alignment="CENTER" />
+   </bottom>
+   <top>
+      <VBox prefHeight="108.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox prefHeight="40.0" styleClass="bg-blue-500">
+               <children>
+                  <VBox HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+                           <children>
+                              <VBox alignment="TOP_CENTER">
+                                 <children>
+                                    <Button mnemonicParsing="false" prefHeight="56.0" prefWidth="200.0" text="Change Password">
+                                       <graphic>
+                                          <FontAwesomeIcon iconName="USER" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="2.0" left="20.0" right="5.0" top="2.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox alignment="TOP_CENTER">
+                                 <children>
+                                    <Button mnemonicParsing="false" prefHeight="56.0" prefWidth="200.0" text="Payment Due">
+                                       <graphic>
+                                          <FontAwesomeIcon iconName="USER" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="2.0" left="20.0" right="5.0" top="2.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox alignment="TOP_CENTER">
+                                 <padding>
+                                    <Insets bottom="2.0" left="20.0" right="5.0" top="2.0" />
+                                 </padding>
+                                 <children>
+                                    <StackPane prefHeight="36.0" prefWidth="2.0">
+                                       <children>
+                                          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f9fbfc" height="36.0" stroke="BLACK" strokeType="INSIDE" width="51.0">
+                                             <StackPane.margin>
+                                                <Insets />
+                                             </StackPane.margin>
+                                          </Rectangle>
+                                          <Label text="0.0" textAlignment="CENTER">
+                                             <styleClass>
+                                                <String fx:value="fill-red" />
+                                                <String fx:value="txt-bold" />
+                                             </styleClass>
+                                             <font>
+                                                <Font size="20.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </StackPane>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox layoutX="10.0" layoutY="10.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
+                           <children>
+                              <VBox alignment="TOP_CENTER">
+                                 <children>
+                                    <Button mnemonicParsing="false" prefHeight="56.0" prefWidth="143.0" text="Logout">
+                                       <graphic>
+                                          <FontAwesomeIcon iconName="USER" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="2.0" left="20.0" right="5.0" top="2.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox prefHeight="68.0" styleClass="bg-blue-400">
+               <children>
+                  <VBox HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox VBox.vgrow="ALWAYS">
+                           <children>
+                              <VBox alignment="CENTER">
+                                 <children>
+                                    <Button mnemonicParsing="false" onMouseClicked="#showDashboard" prefHeight="50.0" prefWidth="143.0" text="Dashboard">
+                                       <graphic>
+                                          <FontAwesomeIcon iconName="USER" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="2.0" left="20.0" right="5.0" top="2.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox alignment="CENTER" layoutX="178.0" layoutY="10.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" onMouseClicked="#showCompanies" prefHeight="50.0" prefWidth="143.0" text="Companies">
+                                       <graphic>
+                                          <FontAwesomeIcon iconName="USER" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="2.0" left="20.0" right="5.0" top="2.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox alignment="CENTER" layoutX="10.0" layoutY="10.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" onMouseClicked="#showPackages" prefHeight="50.0" prefWidth="143.0" text="Packages">
+                                       <graphic>
+                                          <FontAwesomeIcon iconName="USER" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="2.0" left="20.0" right="5.0" top="2.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox alignment="CENTER" layoutX="346.0" layoutY="10.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" onMouseClicked="#showCustomers" prefHeight="50.0" prefWidth="143.0" text="Customers">
+                                       <graphic>
+                                          <FontAwesomeIcon iconName="USER" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="2.0" left="20.0" right="5.0" top="2.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox alignment="CENTER" layoutX="346.0" layoutY="10.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="143.0" text="Invoices">
+                                       <graphic>
+                                          <FontAwesomeIcon iconName="USER" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="2.0" left="20.0" right="5.0" top="2.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox alignment="CENTER" layoutX="514.0" layoutY="10.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="143.0" text="Expenses">
+                                       <graphic>
+                                          <FontAwesomeIcon iconName="USER" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="2.0" left="20.0" right="5.0" top="2.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox alignment="CENTER" layoutX="682.0" layoutY="10.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="143.0" text="Reports">
+                                       <graphic>
+                                          <FontAwesomeIcon iconName="USER" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="2.0" left="20.0" right="5.0" top="2.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox alignment="CENTER" layoutX="850.0" layoutY="10.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="143.0" text="Collections">
+                                       <graphic>
+                                          <FontAwesomeIcon iconName="USER" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="2.0" left="20.0" right="5.0" top="2.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
+                           <children>
+                              <VBox alignment="CENTER">
+                                 <children>
+                                    <ImageView fitHeight="50.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="2.0" left="20.0" right="5.0" top="2.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <HBox fx:id="content_layout" alignment="CENTER" styleClass="bg-green-300" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+   </center>
+</BorderPane>

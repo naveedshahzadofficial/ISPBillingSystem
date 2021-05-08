@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../styles/main.css" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ns.systems.ispbillingsystem.controllers.DashboardController">
+   <children>
+      <HBox maxHeight="60.0" prefHeight="40.0" styleClass="bg-blue-200" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="fill-white" text="ITEM SALES HISTORY">
+                     <font>
+                        <Font size="19.0" />
+                     </font>
+                  </Text>
+               </children>
+               <padding>
+                  <Insets bottom="2.0" left="20.0" right="20.0" top="2.0" />
+               </padding>
+            </VBox>
+            <VBox HBox.hgrow="ALWAYS">
+               <padding>
+                  <Insets bottom="2.0" left="20.0" right="20.0" top="2.0" />
+               </padding></VBox>
+         </children>
+      </HBox>
+      <HBox styleClass="bg-green-300" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox styleClass="bg-blue-400" HBox.hgrow="ALWAYS">
+               <children>
+                  <BarChart fx:id="barChartSales" barGap="2.0" categoryGap="4.0" title="Maximum Sale Top 10 Items" VBox.vgrow="ALWAYS">
+                    <xAxis>
+                      <CategoryAxis fx:id="categoryAxisSales" label="Sales Item In Pcs" side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis fx:id="numberAxisSales" minorTickCount="4" minorTickLength="4.0" side="LEFT" tickLabelGap="2.0" tickUnit="4.0" upperBound="16.0" />
+                    </yAxis>
+                  </BarChart>
+               </children>
+            </VBox>
+            <VBox styleClass="bg-blue-200" HBox.hgrow="ALWAYS">
+               <children>
+                  <PieChart fx:id="pieChartSales" title="Minimum Sale Last 10 Items" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox layoutX="10.0" layoutY="50.0" styleClass="bg-green-300" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox styleClass="bg-blue-400" HBox.hgrow="ALWAYS">
+               <children>
+                  <PieChart fx:id="pieChartExpenses" title="Total Amount Head Wise" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+            <VBox styleClass="bg-blue-200" HBox.hgrow="ALWAYS">
+               <children>
+                  <BarChart fx:id="barChartExpense" title="Expense Category Wise" VBox.vgrow="ALWAYS">
+                    <xAxis>
+                      <CategoryAxis fx:id="categoryAxisExpense" side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis fx:id="numberAxisExpense" side="TOP" />
+                    </yAxis>
+                  </BarChart>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>
