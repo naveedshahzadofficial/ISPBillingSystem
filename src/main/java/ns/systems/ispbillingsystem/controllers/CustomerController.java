@@ -15,12 +15,14 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconName;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -79,6 +81,8 @@ public class CustomerController implements Initializable {
 
     private ObservableList<Customer> customers;
     private FilteredList<Customer> filteredList;
+    private ObservableList<Package> packages;
+    
     RequiredFieldValidator validator = new RequiredFieldValidator();
 
     @FXML
@@ -121,14 +125,13 @@ public class CustomerController implements Initializable {
     private TableColumn<Customer, String> discountColumn;
     @FXML
     private JFXListView<Package> lvPackages;
-
-    ObservableList<Package> packages;
+    
     @FXML
-    private TableColumn<?, ?> cnicColumn;
+    private TableColumn<Customer, String> cnicColumn;
     @FXML
-    private TableColumn<?, ?> pkgColumn;
+    private TableColumn<Customer, String> pkgColumn;
     @FXML
-    private TableColumn<?, ?> priceColumn;
+    private TableColumn<Customer, String> priceColumn;
 
     /**
      * Initializes the controller class.
@@ -140,8 +143,45 @@ public class CustomerController implements Initializable {
             idColumn.setCellValueFactory(new PropertyValueFactory<Customer, Integer>("id"));
             codeColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("code"));
             nameColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("name"));
+            phoneColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("phone"));
+            cnicColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("cnic"));
             discountColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("discount"));
-
+            pkgColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("packages"));
+            pkgColumn.setCellFactory(tc -> {
+                TableCell cell
+                        = new TableCell() {
+                    @Override
+                    protected void updateItem(Object pkgs, boolean empty) {
+                        if (empty || pkgs == null) {
+                            setText("");
+                        } else {
+                            List<Package> new_pkgs = new ArrayList<>();
+                            new_pkgs.addAll((Collection<? extends Package>) pkgs);
+                            setText(new_pkgs.stream().map(Package::getName).collect(Collectors.joining(", ")));
+                        }
+                    }
+                };
+                return cell;
+            });
+            
+            priceColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("packages"));
+            priceColumn.setCellFactory(tc -> {
+                TableCell cell
+                        = new TableCell() {
+                    @Override
+                    protected void updateItem(Object pkgs, boolean empty) {
+                        if (empty || pkgs == null) {
+                            setText("");
+                        } else {
+                            List<Package> new_pkgs = new ArrayList<>();
+                            new_pkgs.addAll((Collection<? extends Package>) pkgs);
+                            Double total_bill =  new_pkgs.stream().collect(Collectors.summingDouble(Package::getPrice));
+                            setText(total_bill.toString());
+                        }
+                    }
+                };
+                return cell;
+            });
             statusColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("status"));
             statusColumn.setCellFactory(tc -> {
                 TableCell cell
@@ -390,7 +430,15 @@ public class CustomerController implements Initializable {
                     return true;
                 } else if (pkg.getName().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
-                } else if (pkg.getPhone().toString().contains(lowerCaseFilter)) {
+                } else if (pkg.getPhone().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (pkg.getCnic().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (pkg.getDiscount().toString().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (pkg.getPackages().stream().map(Package::getName).collect(Collectors.joining(", ")).toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (pkg.getPackages().stream().collect(Collectors.summingDouble(Package::getPrice)).toString().contains(lowerCaseFilter)) {
                     return true;
                 } else if (ISPHelper.getHumanStatus(pkg.getStatus()).toLowerCase().startsWith(lowerCaseFilter)) {
                     return true;
