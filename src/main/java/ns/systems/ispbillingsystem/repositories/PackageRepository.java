@@ -14,7 +14,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 import ns.systems.ispbillingsystem.helpers.ISPHelper;
 import ns.systems.ispbillingsystem.services.CommonService;
-import ns.systems.ispbillingsystem.models.Package;
+import ns.systems.ispbillingsystem.models.Packagee;
 import ns.systems.ispbillingsystem.models.Company;
 import ns.systems.ispbillingsystem.utilities.HibernateUtil;
 import org.apache.log4j.Logger;
@@ -25,7 +25,7 @@ import org.hibernate.Transaction;
  *
  * @author naveed
  */
-public class PackageRepository implements CommonService<Package>{
+public class PackageRepository implements CommonService<Packagee>{
 
     private static SessionFactory sessionFactory;
     private Transaction transaction;
@@ -39,12 +39,12 @@ public class PackageRepository implements CommonService<Package>{
     }
      
     @Override
-    public List<Package> list() {
+    public List<Packagee> list() {
           try{
         session = sessionFactory.openSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Package> query = builder.createQuery(Package.class);
-        Root<Package> root = query.from(Package.class);
+        CriteriaQuery<Packagee> query = builder.createQuery(Packagee.class);
+        Root<Packagee> root = query.from(Packagee.class);
         query.select(root).orderBy(builder.desc(root.get("id")));
         return session.createQuery(query).list();
         }
@@ -53,13 +53,13 @@ public class PackageRepository implements CommonService<Package>{
         }
     }
     
-    public List<Package> multiList() {
+    public List<Packagee> multiList() {
           try{
         session = sessionFactory.openSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Package> query = builder.createQuery(Package.class);
-        Root<Package> root = query.from(Package.class);
-        Join<Package, Company> company = root.join("company");
+        CriteriaQuery<Packagee> query = builder.createQuery(Packagee.class);
+        Root<Packagee> root = query.from(Packagee.class);
+        Join<Packagee, Company> company = root.join("company");
        
         query.multiselect(root,company).orderBy(builder.desc(root.get("id")));
        
@@ -71,7 +71,7 @@ public class PackageRepository implements CommonService<Package>{
     }
 
     @Override
-    public void save(Package object) {
+    public void save(Packagee object) {
    session = sessionFactory.openSession();
      try{
          transaction = session.beginTransaction();
@@ -88,7 +88,7 @@ public class PackageRepository implements CommonService<Package>{
     }
 
     @Override
-    public void update(Package object) {
+    public void update(Packagee object) {
            session = sessionFactory.openSession();
      try{
          transaction = session.beginTransaction();
@@ -105,12 +105,12 @@ public class PackageRepository implements CommonService<Package>{
     }
 
     @Override
-    public Package find(Long Id) {
+    public Packagee find(Long Id) {
          try{
         session = sessionFactory.openSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Package> query = builder.createQuery(Package.class);
-        Root<Package> root = query.from(Package.class);
+        CriteriaQuery<Packagee> query = builder.createQuery(Packagee.class);
+        Root<Packagee> root = query.from(Packagee.class);
         query.select(root).where(builder.equal(root.get("id"), Id));
         return session.createQuery(query).uniqueResult();
         }
@@ -120,12 +120,12 @@ public class PackageRepository implements CommonService<Package>{
     }
 
     @Override
-    public Package findByKey(String ColumnName, String ColumnValue) {
+    public Packagee findByKey(String ColumnName, String ColumnValue) {
          try{
         session = sessionFactory.openSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Package> query = builder.createQuery(Package.class);
-        Root<Package> root = query.from(Package.class);
+        CriteriaQuery<Packagee> query = builder.createQuery(Packagee.class);
+        Root<Packagee> root = query.from(Packagee.class);
         query.select(root).where(builder.equal(root.get(ColumnName), ColumnValue));
         return session.createQuery(query).uniqueResult();
         }
@@ -135,12 +135,12 @@ public class PackageRepository implements CommonService<Package>{
     }
 
     @Override
-    public List<Package> getWhere(String ColumnName, String ColumnValue) {
+    public List<Packagee> getWhere(String ColumnName, String ColumnValue) {
         try{
         session = sessionFactory.openSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Package> query = builder.createQuery(Package.class);
-        Root<Package> root = query.from(Package.class);
+        CriteriaQuery<Packagee> query = builder.createQuery(Packagee.class);
+        Root<Packagee> root = query.from(Packagee.class);
         query.select(root).where(builder.equal(root.get(ColumnName), ColumnValue)).orderBy(builder.desc(root.get("id")));
         return session.createQuery(query).list();
         }
@@ -150,12 +150,12 @@ public class PackageRepository implements CommonService<Package>{
     }
     
     @Override
-    public List<Package> whereLike(String ColumnName, String ColumnValue, String JoinType) {
+    public List<Packagee> whereLike(String ColumnName, String ColumnValue, String JoinType) {
          try{
         session = sessionFactory.openSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Package> query = builder.createQuery(Package.class);
-        Root<Package> root = query.from(Package.class);
+        CriteriaQuery<Packagee> query = builder.createQuery(Packagee.class);
+        Root<Packagee> root = query.from(Packagee.class);
         query.select(root).where(builder.like(root.get(ColumnName), ISPHelper.setLikeType(ColumnValue, JoinType))).orderBy(builder.desc(root.get("id")));
         return session.createQuery(query).list();
         }
@@ -165,7 +165,7 @@ public class PackageRepository implements CommonService<Package>{
     }
 
     @Override
-    public void delete(Package object) {
+    public void delete(Packagee object) {
           session = sessionFactory.openSession();
      try{
          transaction = session.beginTransaction();

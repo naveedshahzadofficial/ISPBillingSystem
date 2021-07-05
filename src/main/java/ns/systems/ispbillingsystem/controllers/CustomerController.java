@@ -2,8 +2,10 @@ package ns.systems.ispbillingsystem.controllers;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXListCell;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextArea;
@@ -38,6 +40,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
@@ -53,6 +57,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import ns.systems.ispbillingsystem.helpers.ISPConstants;
 import ns.systems.ispbillingsystem.helpers.ISPHelper;
@@ -60,8 +66,9 @@ import ns.systems.ispbillingsystem.helpers.ISPValidation;
 import ns.systems.ispbillingsystem.repositories.CustomerRepository;
 import ns.systems.ispbillingsystem.repositories.SettingRepository;
 import ns.systems.ispbillingsystem.models.Customer;
+import ns.systems.ispbillingsystem.models.CustomerPackage;
 import ns.systems.ispbillingsystem.models.Setting;
-import ns.systems.ispbillingsystem.models.Package;
+import ns.systems.ispbillingsystem.models.Packagee;
 import ns.systems.ispbillingsystem.repositories.PackageRepository;
 import org.apache.log4j.Logger;
 
@@ -81,8 +88,8 @@ public class CustomerController implements Initializable {
 
     private ObservableList<Customer> customers;
     private FilteredList<Customer> filteredList;
-    private ObservableList<Package> packages;
-    
+    private ObservableList<Packagee> packages;
+
     RequiredFieldValidator validator = new RequiredFieldValidator();
 
     @FXML
@@ -122,16 +129,20 @@ public class CustomerController implements Initializable {
     @FXML
     private JFXTextArea taAddress;
     @FXML
-    private TableColumn<Customer, String> discountColumn;
+    private TableColumn<Customer, Double> discountColumn;
     @FXML
-    private JFXListView<Package> lvPackages;
-    
+    private JFXListView<Packagee> lvPackages;
+
     @FXML
     private TableColumn<Customer, String> cnicColumn;
     @FXML
     private TableColumn<Customer, String> pkgColumn;
     @FXML
-    private TableColumn<Customer, String> priceColumn;
+    private TableColumn<Customer, String> billingColumn;
+    @FXML
+    private JFXTextField tfDepositAmount;
+    @FXML
+    private TableColumn<Customer, Double> depositColumn;
 
     /**
      * Initializes the controller class.
@@ -145,7 +156,32 @@ public class CustomerController implements Initializable {
             nameColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("name"));
             phoneColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("phone"));
             cnicColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("cnic"));
-            discountColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("discount"));
+            depositColumn.setCellValueFactory(new PropertyValueFactory<Customer, Double>("deposit"));
+            depositColumn.setCellFactory(tc -> new TableCell<Customer, Double>() {
+
+                @Override
+                protected void updateItem(Double price, boolean empty) {
+                    super.updateItem(price, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(ISPHelper.getPriceFormat(price));
+                    }
+                }
+            });
+            discountColumn.setCellValueFactory(new PropertyValueFactory<Customer, Double>("discount"));
+            discountColumn.setCellFactory(tc -> new TableCell<Customer, Double>() {
+
+                @Override
+                protected void updateItem(Double price, boolean empty) {
+                    super.updateItem(price, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(ISPHelper.getPriceFormat(price));
+                    }
+                }
+            });
             pkgColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("packages"));
             pkgColumn.setCellFactory(tc -> {
                 TableCell cell
@@ -155,17 +191,16 @@ public class CustomerController implements Initializable {
                         if (empty || pkgs == null) {
                             setText("");
                         } else {
-                            List<Package> new_pkgs = new ArrayList<>();
-                            new_pkgs.addAll((Collection<? extends Package>) pkgs);
-                            setText(new_pkgs.stream().map(Package::getName).collect(Collectors.joining(", ")));
+                         String pkg_names = ((Collection<? extends CustomerPackage>) pkgs).stream().map(cp -> cp.getPackagee().getName() + " - qty: "+cp.getQuantity()).collect(Collectors.joining("\n"));
+                            setText(pkg_names);
                         }
                     }
                 };
                 return cell;
             });
-            
-            priceColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("packages"));
-            priceColumn.setCellFactory(tc -> {
+
+            billingColumn.setCellValueFactory(new PropertyValueFactory<Customer, String>("packages"));
+            billingColumn.setCellFactory(tc -> {
                 TableCell cell
                         = new TableCell() {
                     @Override
@@ -173,10 +208,8 @@ public class CustomerController implements Initializable {
                         if (empty || pkgs == null) {
                             setText("");
                         } else {
-                            List<Package> new_pkgs = new ArrayList<>();
-                            new_pkgs.addAll((Collection<? extends Package>) pkgs);
-                            Double total_bill =  new_pkgs.stream().collect(Collectors.summingDouble(Package::getPrice));
-                            setText(total_bill.toString());
+                            Double total_bill =  ((Collection<? extends CustomerPackage>) pkgs).stream().collect(Collectors.summingDouble(cp -> cp.getQuantity() * cp.getPackagee().getPrice()));
+                            setText(ISPHelper.getPriceFormat(total_bill));
                         }
                     }
                 };
@@ -223,6 +256,7 @@ public class CustomerController implements Initializable {
                                 tfName.setText(oldCustomer.getName());
                                 tfPhone.setText(oldCustomer.getPhone());
                                 tfCnic.setText(oldCustomer.getCnic());
+                                tfDepositAmount.setText(oldCustomer.getDeposit().toString());
                                 tfDiscount.setText(oldCustomer.getDiscount().toString());
                                 taAddress.setText(oldCustomer.getAddress());
 
@@ -232,21 +266,8 @@ public class CustomerController implements Initializable {
                                     rbInActive.setSelected(true);
                                 }
 
-                                packages.forEach((pkg) -> {
-                                    BooleanProperty selected = new SimpleBooleanProperty(false);
-                                    pkg.setSelected(selected);
-                                });
-                                lvPackages.refresh();
-
-                                oldCustomer.getPackages().forEach((oldPkg) -> {
-                                    packages.forEach((pkg) -> {
-                                        if (pkg.toString().equals(oldPkg.toString())) {
-                                            BooleanProperty selected = new SimpleBooleanProperty(true);
-                                            pkg.setSelected(selected);
-                                        }
-                                    });
-                                });
-
+                                packages.stream().map(pkg -> { pkg.setIsSelected(false); pkg.setQuantity(1); return pkg; }).collect(Collectors.toList());
+                                oldCustomer.getPackages().stream().flatMap(cp -> packages.stream().filter(p -> p.toString().equals(cp.getPackagee().toString())).map(p -> { p.setIsSelected(true); p.setQuantity(1); return p; })).collect(Collectors.toList());
                                 lvPackages.refresh();
 
                             });
@@ -324,18 +345,77 @@ public class CustomerController implements Initializable {
             prefix = ISPHelper.getSettingPrefix(settingRepository, ISPConstants.CUSTOMER_PREFIX_FIELD);
             tfCode.setText(prefix + setting.getOptionValue());
 
-            lvPackages.setCellFactory(CheckBoxListCell.forListView(Package::getSelected, new StringConverter<Package>() {
+            lvPackages.setCellFactory(new Callback<ListView<Packagee>, ListCell<Packagee>>() {
                 @Override
-                public String toString(Package pkg) {
-                    return pkg.getName() + " - Rs. " + pkg.getPrice();
-                }
+                public ListCell<Packagee> call(ListView<Packagee> param) {
+                    return new JFXListCell<Packagee>() {
+                        @Override
+                        public void updateItem(Packagee pkg, boolean empty) {
+                            super.updateItem(pkg, empty);
+                            if (pkg != null && !empty) {
+                                HBox hBox = new HBox();
+                                hBox.setUserData(pkg);
+                                hBox.setMouseTransparent(false);
 
-                @Override
-                public Package fromString(String string) {
-                    return null;
-                }
+                                JFXComboBox<Integer> combo = new JFXComboBox<>();
+                                combo.getStyleClass().add("combo-center-aligned");
+                                combo.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+                                combo.setValue(pkg.getQuantity());
 
-            }));
+                                combo.valueProperty().addListener(new ChangeListener<Integer>() {
+                                    @Override
+                                    public void changed(ObservableValue<? extends Integer> ov, Integer t, Integer t1) {
+                                        logger.info("fire combo change listener with quantity" + t1);
+                                        pkg.setQuantity(t1);
+                                    }
+                                });
+
+                                JFXCheckBox checkBox = new JFXCheckBox(pkg.getName() + " - Rs. " + pkg.getPriceFormat());
+                                if (pkg.getIsSelected()) {
+                                    checkBox.setSelected(true);
+                                }
+
+                                checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                                    @Override
+                                    public void changed(ObservableValue<? extends Boolean> ov, Boolean wasSelected, Boolean isNowSelected) {
+                                        if (isNowSelected) {
+                                            logger.info("fire checkbox change listener with checkbox selected");
+                                            pkg.setIsSelected(true);
+                                            combo.setValue(pkg.getQuantity());
+                                            //selectedPkgs.add(pkg);
+
+                                        } else {
+                                            logger.info("fire checkbox change listener with checkbox unSelected");
+                                            pkg.setIsSelected(false);
+                                            combo.setValue(1);
+                                            //selectedPkgs.remove(pkg);
+                                        }
+
+                                        //logger.info(selectedPkgs.size());
+                                    }
+                                });
+
+                              
+
+                                VBox vBox1 = new VBox();
+                                vBox1.getChildren().add(checkBox);
+                                vBox1.setAlignment(Pos.CENTER_LEFT);
+                                HBox.setHgrow(vBox1, Priority.ALWAYS);
+
+                                VBox vBox2 = new VBox();
+                                vBox2.getChildren().add(combo);
+                                vBox2.setAlignment(Pos.CENTER_RIGHT);
+                                HBox.setHgrow(vBox2, Priority.ALWAYS);
+
+                                hBox.getChildren().addAll(vBox1, vBox2);
+                                setGraphic(hBox);
+                                setText("");
+
+                            }
+                        }
+                    };
+                }
+            });
 
             packages = FXCollections.observableArrayList(packageRepository.getWhere("status", "1"));
             lvPackages.setItems(packages);
@@ -358,19 +438,19 @@ public class CustomerController implements Initializable {
         tfName.setText("");
         tfPhone.setText("");
         tfCnic.setText("");
+        tfDepositAmount.setText("");
         tfDiscount.setText("");
         taAddress.setText("");
         rbActive.setSelected(true);
-        packages.forEach((pkg) -> {
-            BooleanProperty selected = new SimpleBooleanProperty(false);
-            pkg.setSelected(selected);
-        });
+        
+        packages.stream().map(pkg -> { pkg.setIsSelected(false); pkg.setQuantity(1); return pkg; }).collect(Collectors.toList());
         lvPackages.refresh();
 
     }
 
     @FXML
     private void saveForm(MouseEvent event) {
+
         if (!tfName.validate()) {
             return;
         }
@@ -378,10 +458,18 @@ public class CustomerController implements Initializable {
         RadioButton rbSelected
                 = (RadioButton) tgPackageStatus.getSelectedToggle();
         Integer selectedStatus = (rbSelected != null && "Active".equals(rbSelected.getText())) ? 1 : 0;
+        Double deposit = (tfDepositAmount.getText().equals("")) ? 0 : Double.parseDouble(tfDepositAmount.getText());
         Double discount = (tfDiscount.getText().equals("")) ? 0 : Double.parseDouble(tfDiscount.getText());
-        Customer new_customer = new Customer(tfCode.getText(), tfName.getText(), discount, tfPhone.getText(), tfCnic.getText(), taAddress.getText(), selectedStatus);
-
-        new_customer.setPackages(packages.stream().filter(e -> e.isSelected() == true).collect(Collectors.toSet()));
+        Customer new_customer = new Customer(tfCode.getText(), tfName.getText(), deposit, discount, tfPhone.getText(), tfCnic.getText(), taAddress.getText(), selectedStatus);
+        
+        Set<CustomerPackage> customerPackages = packages.stream().filter(pkg -> pkg.getIsSelected()).map(pkg -> new CustomerPackage(new_customer,pkg,pkg.getQuantity())).collect(Collectors.toSet());
+        
+        if(oldCustomer != null && oldCustomer.getPackages().size() > 0){
+        oldCustomer.getPackages().removeAll(FXCollections.observableSet(oldCustomer.getPackages()));
+        customerRepository.update(oldCustomer);
+        }
+        
+        new_customer.setPackages(customerPackages);
 
         if (isUpdated) {
             new_customer.setId(oldCustomer.getId());
@@ -434,13 +522,16 @@ public class CustomerController implements Initializable {
                     return true;
                 } else if (pkg.getCnic().contains(lowerCaseFilter)) {
                     return true;
-                } else if (pkg.getDiscount().toString().contains(lowerCaseFilter)) {
+                } else if (pkg.getDiscount() != null && pkg.getDiscount().toString().contains(lowerCaseFilter)) {
                     return true;
-                } else if (pkg.getPackages().stream().map(Package::getName).collect(Collectors.joining(", ")).toLowerCase().contains(lowerCaseFilter)) {
+                } else if (pkg.getDeposit() != null &&  pkg.getDeposit().toString().contains(lowerCaseFilter)) {
                     return true;
-                } else if (pkg.getPackages().stream().collect(Collectors.summingDouble(Package::getPrice)).toString().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (ISPHelper.getHumanStatus(pkg.getStatus()).toLowerCase().startsWith(lowerCaseFilter)) {
+                }else if (pkg.getPackages().stream().map(p -> p.getPackagee().getName()).collect(Collectors.joining(", ")).toLowerCase().contains(lowerCaseFilter)) {
+                                    return true;
+                 } else if (pkg.getPackages().stream().collect(Collectors.summingDouble(cp -> cp.getQuantity() * cp.getPackagee().getPrice())).toString().equals(lowerCaseFilter)) {
+                                    return true;
+                                } 
+                else if (ISPHelper.getHumanStatus(pkg.getStatus()).toLowerCase().startsWith(lowerCaseFilter)) {
                     return true;
                 }
 

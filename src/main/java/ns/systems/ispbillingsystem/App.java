@@ -1,7 +1,6 @@
 package ns.systems.ispbillingsystem;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -25,7 +24,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         Parent root = ISPHelper.loadFXML("fxmls/login");
-        PropertyConfigurator.configure(App.class.getResource("fxmls/log4j.properties"));
+        PropertyConfigurator.configure(App.class.getResource("cfgs/log4j.properties"));
         logger.info("Start Application");
         scene = new Scene(root, 700, 500);
         stage.setResizable(false);

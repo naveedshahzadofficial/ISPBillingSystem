@@ -157,7 +157,7 @@
                               </VBox>
                               <VBox alignment="CENTER" layoutX="346.0" layoutY="10.0">
                                  <children>
-                                    <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="143.0" text="Invoices">
+                                    <Button mnemonicParsing="false" onMouseClicked="#showInvoices" prefHeight="50.0" prefWidth="143.0" text="Invoices">
                                        <graphic>
                                           <FontAwesomeIcon iconName="USER" />
                                        </graphic>

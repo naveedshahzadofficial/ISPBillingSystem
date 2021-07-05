@@ -5,13 +5,17 @@
  */
 package ns.systems.ispbillingsystem.utilities;
 
-import ns.systems.ispbillingsystem.models.Company;
-import ns.systems.ispbillingsystem.models.Package;
 import ns.systems.ispbillingsystem.models.Setting;
+import ns.systems.ispbillingsystem.models.Company;
+import ns.systems.ispbillingsystem.models.Packagee;
+import ns.systems.ispbillingsystem.models.Customer;
+import ns.systems.ispbillingsystem.models.CustomerPackage;
 
 import org.hibernate.SessionFactory;
 import java.util.Properties;
-import ns.systems.ispbillingsystem.models.Customer;
+import ns.systems.ispbillingsystem.App;
+import ns.systems.ispbillingsystem.models.Invoice;
+import ns.systems.ispbillingsystem.models.InvoicePackage;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -30,33 +34,34 @@ public class HibernateUtil {
         if(sessionFactory == null){
             try{
                 Configuration configuration = new Configuration();
+                configuration.configure(App.class.getResource("cfgs/hibernate.cfg.xml"));
                 
                 // Hibernate Settings equivalent to hibernate.cfg.xml's properties
-                Properties settings = new Properties();
-                settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/isp_billing_system?useSSL=false");
-                settings.put(Environment.USER, "root");
-                settings.put(Environment.PASS, "root");
-                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL57Dialect");
-                
-                settings.put(Environment.SHOW_SQL, true);
-                settings.put(Environment.FORMAT_SQL, true);
-                settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-                settings.put(Environment.HBM2DDL_AUTO, "update");
-                settings.put(Environment.ENABLE_LAZY_LOAD_NO_TRANS, true);
-                settings.put(Environment.JDBC_TIME_ZONE, "Asia/Karachi");
-                settings.put(Environment.LOG_JDBC_WARNINGS, false);
-                
-                configuration.setProperties(settings);
+//                Properties settings = new Properties();
+//                settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
+//                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/isp_billing_system?useSSL=false");
+//                settings.put(Environment.USER, "root");
+//                settings.put(Environment.PASS, "root");
+//                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL57Dialect");
+//                
+//                settings.put(Environment.SHOW_SQL, true);
+//                settings.put(Environment.FORMAT_SQL, true);
+//                settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
+//                settings.put(Environment.HBM2DDL_AUTO, "update");
+//                settings.put(Environment.ENABLE_LAZY_LOAD_NO_TRANS, true);
+//                settings.put(Environment.JDBC_TIME_ZONE, "Asia/Karachi");
+//                settings.put(Environment.LOG_JDBC_WARNINGS, false);
+//                
+//                configuration.setProperties(settings);
                 configuration.addAnnotatedClass(Company.class);
-                configuration.addAnnotatedClass(Package.class);
+                configuration.addAnnotatedClass(Packagee.class);
                 configuration.addAnnotatedClass(Setting.class);
                 configuration.addAnnotatedClass(Customer.class);
+                configuration.addAnnotatedClass(CustomerPackage.class);
+                configuration.addAnnotatedClass(Invoice.class);
+                configuration.addAnnotatedClass(InvoicePackage.class);
                 
-              
                  //ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-                
-                
                  registry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
                  
                  sessionFactory =  configuration.buildSessionFactory(registry);

@@ -408,3 +408,7 @@
 .edit-icon:hover{
     -fx-fill:-fx-info-hover;
 }
+
+.combo-box.combo-center-aligned>.list-cell {
+    -fx-alignment: center;
+}

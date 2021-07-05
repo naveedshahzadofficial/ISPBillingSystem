@@ -61,5 +61,10 @@ public class LayoutController implements Initializable {
     private void showCustomers(MouseEvent event) {
         DynamicViews.loadHBox(content_layout, "customers");
     }
+
+    @FXML
+    private void showInvoices(MouseEvent event) {
+         DynamicViews.loadHBox(content_layout, "invoices");
+    }
    
 }

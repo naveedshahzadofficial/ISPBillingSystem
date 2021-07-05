@@ -7,10 +7,13 @@ package ns.systems.ispbillingsystem.models;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -76,8 +79,8 @@ public class Company {
     private Date deletedAt;
      
     
-    @OneToMany(mappedBy = "company" ,cascade=CascadeType.ALL, orphanRemoval = true)
-    private List<Package> packages = new ArrayList<>();
+    @OneToMany(mappedBy = "company" ,cascade=CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+    private Set<Packagee> packages = new HashSet<>();
     
     @PrePersist 
    void prePersist() {
@@ -172,11 +175,11 @@ public class Company {
         this.phone = phone;
     }
 
-    public List<Package> getPackages() {
+    public Set<Packagee> getPackages() {
         return packages;
     }
 
-    public void setPackages(List<Package> packages) {
+    public void setPackages(Set<Packagee> packages) {
         this.packages = packages;
     }
 

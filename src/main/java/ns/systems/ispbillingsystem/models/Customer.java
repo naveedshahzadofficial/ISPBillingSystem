@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -42,7 +44,7 @@ import org.hibernate.annotations.Where;
 @NamedQuery(name = "Customer.FindByName", query = "SELECT p FROM Customer p WHERE p.name like :name")
 public class Customer {
     
-    @Transient
+   @Transient
    Logger logger = Logger.getLogger(this.getClass().getName());
     
    @Id
@@ -56,8 +58,11 @@ public class Customer {
     @Column(name = "name" , nullable = false)
     private String name;
     
+    @Column(name = "deposit" , nullable = true)
+    private Double deposit = 0.0;
+    
     @Column(name = "discount" , nullable = true)
-    private Double discount;
+    private Double discount = 0.0;
     
     @Column(name = "phone" , nullable = false)
     private String phone;
@@ -86,14 +91,19 @@ public class Customer {
     private Date deletedAt;
     
     
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(
-        name = "customer_packages", 
-        joinColumns = { @JoinColumn(name = "customer_id") }, 
-        inverseJoinColumns = { @JoinColumn(name = "package_id"),
-        }
-    )
-    Set<Package> packages = new HashSet<>();
+//    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+//    @JoinTable(
+//        name = "customer_packages", 
+//        joinColumns = { @JoinColumn(name = "customer_id") }, 
+//        inverseJoinColumns = { @JoinColumn(name = "package_id"),
+//        }
+//    )
+//    Set<Package> packages = new HashSet<>();
+     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
+     private Set<CustomerPackage> packages = new HashSet<>();
+     
+     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+     private Set<Invoice> invoices = new HashSet<>();
     
     @PrePersist 
    void prePersist() {
@@ -113,9 +123,10 @@ public class Customer {
         super();
     }
 
-    public Customer(String code, String name, Double discount, String phone, String cnic, String address, Integer status) {
+    public Customer(String code, String name, Double deposit, Double discount, String phone, String cnic, String address, Integer status) {
         this.code = code;
         this.name = name;
+        this.deposit = deposit;
         this.discount = discount;
         this.phone = phone;
         this.cnic = cnic;
@@ -156,6 +167,15 @@ public class Customer {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Double getDeposit() {
+        return deposit;
+    }
+
+    public void setDeposit(Double deposit) {
+        this.deposit = deposit;
+    }
+    
 
     public Double getDiscount() {
         return discount;
@@ -221,12 +241,28 @@ public class Customer {
         this.deletedAt = deletedAt;
     }
 
-    public Set<Package> getPackages() {
+//    public Set<Package> getPackages() {
+//        return packages;
+//    }
+//
+//    public void setPackages(Set<Package> packages) {
+//        this.packages = packages;
+//    }
+
+    public Set<CustomerPackage> getPackages() {
         return packages;
     }
 
-    public void setPackages(Set<Package> packages) {
+    public void setPackages(Set<CustomerPackage> packages) {
         this.packages = packages;
+    }
+
+    public Set<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(Set<Invoice> invoices) {
+        this.invoices = invoices;
     }
     
     

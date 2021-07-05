@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-configuration>
+    <session-factory>
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <!-- property name="connection.driver_class">com.mysql.jdbc.Driver</property -->
+        <property name="connection.url">jdbc:mysql://localhost:3306/isp_billing_system?useSSL=false</property>
+        <property name="dialect">org.hibernate.dialect.MySQL57Dialect</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">root</property>
+        <property name="connection.pool_size">20</property>
+        <!--property name="dialect">org.hibernate.dialect.MySQLDialect</property-->
+        <property name="current_session_context_class">thread</property>
+        <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
+        <property name="hbm2ddl.auto">update</property>
+        <property name="enable_lazy_load_no_trans">true</property>
+        <property name="enable_lazy_load_no_trans">true</property>
+        <property name="jdbc_time_zone">Asia/Karachi</property>
+        <property name="log_jdbc_warings">false</property>
+        <!-- List of XML mapping files -->
+        <!--        
+        <mapping resource=”userdetails.hbm.xml“/>
+        <mapping class = "ns.systems.ispbillingsystem.models.Setting"/>
+        <mapping resource = "ns.systems.ispbillingsystem.models.Company"/>
+        <mapping class = "ns.systems.ispbillingsystem.models.Packagee"/>
+        <mapping class = "ns.systems.ispbillingsystem.models.Customer"/>
+        <mapping class = "ns.systems.ispbillingsystem.models.CustomerPackage"/>-->
+      
+    </session-factory>
+</hibernate-configuration>

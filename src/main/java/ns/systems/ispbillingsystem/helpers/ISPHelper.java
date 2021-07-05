@@ -6,6 +6,13 @@
 package ns.systems.ispbillingsystem.helpers;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -66,6 +73,31 @@ public class ISPHelper {
       public static String getHumanStatus(int status){
           return status==1?"Active":"In Active";
       }
+    public static String getHumanInvoiceStatus(int status){
+        return status==1?"Unpaid":"Paid";
+    }
+      
+       public static String getPriceFormat(double number){
+           DecimalFormat decimalFormat = new DecimalFormat("#.##");
+           decimalFormat.setGroupingUsed(true);
+           decimalFormat.setGroupingSize(3);
+           return decimalFormat.format(number);
+      }
+       
+       public static String getLocalDateFormat(LocalDate localDate){
+               DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+               return localDate.format(dateTimeFormatter);
+       }
+       
+        public static String getDateFormat(Date date){
+               SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM dd, yyyy");
+               return simpleDateFormat.format(date);
+       }
+       
+       public static Date getStringDateFormat(String value) throws ParseException{
+                   SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
+                   return simpleDateFormat.parse(value);
+       }
      
      
 }

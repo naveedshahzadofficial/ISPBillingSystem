@@ -51,7 +51,7 @@ import javafx.util.StringConverter;
 import ns.systems.ispbillingsystem.helpers.ISPConstants;
 import ns.systems.ispbillingsystem.helpers.ISPHelper;
 import ns.systems.ispbillingsystem.helpers.ISPValidation;
-import ns.systems.ispbillingsystem.models.Package;
+import ns.systems.ispbillingsystem.models.Packagee;
 import ns.systems.ispbillingsystem.models.Setting;
 import ns.systems.ispbillingsystem.models.Company;
 import ns.systems.ispbillingsystem.repositories.PackageRepository;
@@ -67,36 +67,36 @@ import org.apache.log4j.Logger;
 public class PackageController implements Initializable {
 
     private static final Logger logger = Logger.getLogger(PackageController.class.getName());
-    
+
     private static final PackageRepository packageRepository = new PackageRepository();
     private static final SettingRepository settingRepository = new SettingRepository();
     private static final CompanyRepository companyRepository = new CompanyRepository();
-    
+
     private static String prefix;
     private static Setting setting;
     private boolean isUpdated = false;
-    private Package oldPackage = null;
+    private Packagee oldPackage = null;
     private int selectedIndex = 0;
 
     @FXML
-    private TableView<Package> packageTable;
+    private TableView<Packagee> packageTable;
 
     @FXML
-    private TableColumn<Package, Integer> idColumn;
+    private TableColumn<Packagee, Integer> idColumn;
 
     @FXML
-    private TableColumn<Package, String> nameColumn;
+    private TableColumn<Packagee, String> nameColumn;
 
     @FXML
-    private TableColumn<Package, Double> priceColumn;
+    private TableColumn<Packagee, Double> priceColumn;
 
     @FXML
-    private TableColumn<Package, String> statusColumn;
+    private TableColumn<Packagee, String> statusColumn;
 
     @FXML
-    private TableColumn<Package, String> actionColumn;
+    private TableColumn<Packagee, String> actionColumn;
     @FXML
-    private TableColumn<Package, Double> actualPriceColumn;
+    private TableColumn<Packagee, Double> actualPriceColumn;
     @FXML
     private ToggleGroup tgPackageStatus;
     @FXML
@@ -116,28 +116,29 @@ public class PackageController implements Initializable {
     @FXML
     private JFXTextField searchBox;
     @FXML
-    private TableColumn<Package, String> codeColumn;
+    private TableColumn<Packagee, String> codeColumn;
 
     RequiredFieldValidator validator = new RequiredFieldValidator();
     @FXML
     private StackPane tvStackPane;
     @FXML
-    private TableColumn<Package, Company> companyColumn;
+    private TableColumn<Packagee, Company> companyColumn;
 
-    private ObservableList<Package> packages;
-    private FilteredList<Package> filteredList;
+    private ObservableList<Packagee> packages;
+    private FilteredList<Packagee> filteredList;
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            idColumn.setCellValueFactory(new PropertyValueFactory<Package, Integer>("id"));
-            codeColumn.setCellValueFactory(new PropertyValueFactory<Package, String>("code"));
-            nameColumn.setCellValueFactory(new PropertyValueFactory<Package, String>("name"));
-            companyColumn.setCellValueFactory(new PropertyValueFactory<Package, Company>("company"));
+            idColumn.setCellValueFactory(new PropertyValueFactory<Packagee, Integer>("id"));
+            codeColumn.setCellValueFactory(new PropertyValueFactory<Packagee, String>("code"));
+            nameColumn.setCellValueFactory(new PropertyValueFactory<Packagee, String>("name"));
+            companyColumn.setCellValueFactory(new PropertyValueFactory<Packagee, Company>("company"));
             companyColumn.setCellFactory(tc -> {
-                return new TableCell<Package, Company>() {
+                return new TableCell<Packagee, Company>() {
                     @Override
                     public void updateItem(Company company, boolean empty) {
                         if (empty || company == null) {
@@ -146,28 +147,53 @@ public class PackageController implements Initializable {
                             setText(company.getName());
                         }
                     }
-                };  });
-            priceColumn.setCellValueFactory(new PropertyValueFactory<Package, Double>("price"));
-            actualPriceColumn.setCellValueFactory(new PropertyValueFactory<Package, Double>("actualPrice"));
-            statusColumn.setCellValueFactory(new PropertyValueFactory<Package, String>("status"));
+                };
+            });
+            priceColumn.setCellValueFactory(new PropertyValueFactory<Packagee, Double>("price"));
+            priceColumn.setCellFactory(tc -> new TableCell<Packagee, Double>() {
+
+                @Override
+                protected void updateItem(Double price, boolean empty) {
+                    super.updateItem(price, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(ISPHelper.getPriceFormat(price));
+                    }
+                }
+            });
+            actualPriceColumn.setCellValueFactory(new PropertyValueFactory<Packagee, Double>("actualPrice"));
+            actualPriceColumn.setCellFactory(tc -> new TableCell<Packagee, Double>() {
+
+                @Override
+                protected void updateItem(Double price, boolean empty) {
+                    super.updateItem(price, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(ISPHelper.getPriceFormat(price));
+                    }
+                }
+            });
+            statusColumn.setCellValueFactory(new PropertyValueFactory<Packagee, String>("status"));
             statusColumn.setCellFactory(tc -> {
-               TableCell cell =
-                       new TableCell() {
-                           @Override
-                           protected void updateItem(Object status, boolean empty) {
-                               if (empty || status == null) {
-                                   setText("");
-                               } else {
-                                   setText(ISPHelper.getHumanStatus(Integer.parseInt(status.toString())));
-                               }
-                           }
-                       };
-               return cell;
+                TableCell cell
+                        = new TableCell() {
+                    @Override
+                    protected void updateItem(Object status, boolean empty) {
+                        if (empty || status == null) {
+                            setText("");
+                        } else {
+                            setText(ISPHelper.getHumanStatus(Integer.parseInt(status.toString())));
+                        }
+                    }
+                };
+                return cell;
             });
             // action column
-            Callback<TableColumn<Package, String>, TableCell<Package, String>> cellFoctory = (TableColumn<Package, String> param) -> {
+            Callback<TableColumn<Packagee, String>, TableCell<Packagee, String>> cellFoctory = (TableColumn<Packagee, String> param) -> {
                 // make cell containing buttons
-                final TableCell<Package, String> cell = new TableCell<Package, String>() {
+                final TableCell<Packagee, String> cell = new TableCell<Packagee, String>() {
                     @Override
                     public void updateItem(String item, boolean empty) {
                         super.updateItem(item, empty);
@@ -266,7 +292,7 @@ public class PackageController implements Initializable {
             packages = FXCollections.observableArrayList(packageRepository.list());
             packageTable.setItems(packages);
             filteredList = new FilteredList<>(packages, e -> true);
-            
+
             setting = ISPHelper.getSettingCode(settingRepository, ISPConstants.PACKAGE_CODE_FIELD, ISPConstants.PACKAGE_PREFIX_FIELD, ISPConstants.PACKAGE_PREFIX);
             prefix = ISPHelper.getSettingPrefix(settingRepository, ISPConstants.PACKAGE_PREFIX_FIELD);
 
@@ -335,7 +361,7 @@ public class PackageController implements Initializable {
         RadioButton rbSelected
                 = (RadioButton) tgPackageStatus.getSelectedToggle();
         Integer selectedStatus = (rbSelected != null && "Active".equals(rbSelected.getText())) ? 1 : 0;
-        Package new_package = new Package(tfCode.getText(), tfName.getText(), Double.parseDouble(tfPrice.getText()), Double.parseDouble(tfAcutalPrice.getText()), selectedStatus, cbCompany.getValue());
+        Packagee new_package = new Packagee(tfCode.getText(), tfName.getText(), Double.parseDouble(tfPrice.getText()), Double.parseDouble(tfAcutalPrice.getText()), selectedStatus, cbCompany.getValue());
         if (isUpdated) {
             new_package.setId(oldPackage.getId());
             packageRepository.update(new_package);
@@ -354,7 +380,6 @@ public class PackageController implements Initializable {
         clearPackage(event);
     }
 
-
     @FXML
     private void clearFilter(MouseEvent event) {
         searchBox.setText("");
@@ -364,36 +389,36 @@ public class PackageController implements Initializable {
     private void filterSearchButton(MouseEvent event) {
         filteredResult();
     }
-    
-    private void filteredResult(){
-        
-    searchBox.textProperty().addListener((observableValue, oldValue, newValue) -> {
-                    filteredList.setPredicate((Predicate<? super Package>) pkg -> {
-                        if (newValue == null || newValue.isEmpty()) {
-                            return true;
-                        }
-                        String lowerCaseFilter = newValue.toLowerCase();
 
-                        if (pkg.getCode().toLowerCase().contains(lowerCaseFilter)) {
-                            return true;
-                        } else if (pkg.getName().toLowerCase().contains(lowerCaseFilter)) {
-                            return true;
-                        } else if (pkg.getCompany().getName().toLowerCase().contains(lowerCaseFilter)) {
-                            return true;
-                        } else if (pkg.getPrice().toString().contains(lowerCaseFilter)) {
-                            return true;
-                        } else if (pkg.getActualPrice().toString().contains(lowerCaseFilter)) {
-                            return true;
-                        } else if (ISPHelper.getHumanStatus(pkg.getStatus()).toLowerCase().startsWith(lowerCaseFilter)) {
-                            return true;
-                        }
+    private void filteredResult() {
 
-                        return false;
-                    });
-                });
-                SortedList<Package> sortedList = new SortedList<>(filteredList);
-                sortedList.comparatorProperty().bind(packageTable.comparatorProperty());
-                packageTable.setItems(sortedList);
+        searchBox.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            filteredList.setPredicate((Predicate<? super Packagee>) pkg -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (pkg.getCode().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (pkg.getName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (pkg.getCompany().getName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (pkg.getPrice().toString().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (pkg.getActualPrice().toString().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (ISPHelper.getHumanStatus(pkg.getStatus()).toLowerCase().startsWith(lowerCaseFilter)) {
+                    return true;
+                }
+
+                return false;
+            });
+        });
+        SortedList<Packagee> sortedList = new SortedList<>(filteredList);
+        sortedList.comparatorProperty().bind(packageTable.comparatorProperty());
+        packageTable.setItems(sortedList);
     }
 
     @FXML
